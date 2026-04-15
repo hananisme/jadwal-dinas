@@ -8,12 +8,12 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --teal:#0B6E50;--teal-d:#074F39;--teal-l:#E0F2EB;
+  --teal:#6CABDD;--teal-d:#1C2C5B;--teal-l:#D9ECFA;
   --amber:#B45309;--amber-d:#92400E;--amber-l:#FEF3C7;
   --gray:#6B7280;--gray-l:#F3F4F6;
   --red:#DC2626;--red-l:#FEE2E2;
   --green:#059669;--green-l:#D1FAE5;
-  --bg:#EEF3F0;--card:#FFF;--text:#111827;--muted:#6B7280;--border:#E5E7EB;
+  --bg:#EAF4FC;--card:#FFF;--text:#111827;--muted:#6B7280;--border:#C8DFF0;
   --nav:68px;
 }
 body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
@@ -72,7 +72,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .day-dot{width:4px;height:4px;border-radius:50%;}
 .dhdr{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;}
 .dhdr-t{font-size:14px;font-weight:600;color:var(--muted);}
-.fab{position:fixed;right:16px;bottom:calc(var(--nav) + 14px);width:54px;height:54px;border-radius:27px;background:var(--teal);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(11,110,80,.45);z-index:40;transition:transform .15s;}
+.fab{position:fixed;right:16px;bottom:calc(var(--nav) + 14px);width:54px;height:54px;border-radius:27px;background:var(--teal);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(28,44,91,.4);z-index:40;transition:transform .15s;}
 .fab:hover{transform:scale(1.05);}
 @media(min-width:480px){.fab{right:calc(50% - 240px + 16px);}}
 .rc{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px;}
@@ -197,12 +197,12 @@ const I={
   cr:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
   clk:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
   chk:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-  bs:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0B6E50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+  bs:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6CABDD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
 };
 
 // ── CONFIG ───────────────────────────────────
 const WP={
-  puskesmas:{n:'Puskesmas',c:'#0B6E50',l:'#E0F2EB',d:'#074F39'},
+  puskesmas:{n:'Puskesmas',c:'#6CABDD',l:'#D9ECFA',d:'#1C2C5B'},
   kampus:{n:'Kampus',c:'#B45309',l:'#FEF3C7',d:'#92400E'},
   lainnya:{n:'Lainnya',c:'#6B7280',l:'#F3F4F6',d:'#374151'},
 };
