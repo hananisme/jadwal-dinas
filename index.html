@@ -14,27 +14,29 @@
   --red:#DC2626;--red-l:#FEE2E2;
   --green:#059669;--green-l:#D1FAE5;
   --bg:#EEF3F0;--card:#FFF;--text:#111827;--muted:#6B7280;--border:#E5E7EB;
-  --nav:68px;--r:14px;--rs:10px;
+  --nav:68px;
 }
 body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;}
-/* NAV */
+.loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;}
+.loading-ico{font-size:48px;margin-bottom:16px;animation:bounce .8s infinite alternate;}
+.loading-txt{font-size:16px;font-weight:600;color:var(--muted);}
+.loading-sub{font-size:13px;color:var(--muted);margin-top:6px;opacity:.7;}
+@keyframes bounce{from{transform:translateY(0);}to{transform:translateY(-10px);}}
+.sync-dot{position:fixed;top:14px;right:14px;width:8px;height:8px;border-radius:50%;background:#22C55E;z-index:100;transition:background .3s;}
+.sync-dot.syncing{background:#F59E0B;animation:pulse .8s infinite;}
+.sync-dot.error{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--nav);background:var(--card);border-top:1px solid var(--border);display:flex;z-index:50;box-shadow:0 -2px 12px rgba(0,0,0,.05);}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:none;cursor:pointer;color:var(--muted);padding:8px 0 12px;position:relative;transition:color .15s;}
 .nav-btn.on{color:var(--teal);}
-.nav-btn svg{display:block;}
 .nav-lbl{font-size:10px;font-weight:700;letter-spacing:.02em;}
 .nav-badge{position:absolute;top:6px;right:calc(50% - 16px);background:var(--red);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
-/* HEADER */
 .hdr{background:var(--card);padding:20px 20px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
 .hdr-sub{font-size:12px;color:var(--muted);margin-bottom:2px;font-weight:500;}
 .hdr-title{font-size:22px;font-weight:700;}
-/* CONTENT */
 .content{padding:16px;padding-bottom:calc(var(--nav) + 24px);}
-/* CARDS */
-.card{background:var(--card);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);}
-/* EVENT CARD */
-.ec{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid var(--teal);display:flex;gap:10px;align-items:flex-start;}
+.ec{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid var(--teal);display:flex;gap:10px;align-items:flex-start;}
 .ec.kampus{border-left-color:var(--amber);}
 .ec.lainnya{border-left-color:var(--gray);}
 .ec-info{flex:1;min-width:0;}
@@ -50,15 +52,12 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .ec-acts{display:flex;gap:2px;flex-shrink:0;}
 .ibtn{background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:background .15s;}
 .ibtn:hover{background:var(--gray-l);}
-/* STATS */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
-.stat{background:var(--card);border-radius:var(--r);padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.stat{background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .stat-l{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:5px;}
 .stat-v{font-size:26px;font-weight:800;line-height:1;}
 .stat-s{font-size:11px;color:var(--muted);margin-top:3px;}
-/* SECTION LABEL */
 .sec-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:18px 0 10px;}
-/* WEEK STRIP */
 .wk-hdr{background:var(--card);padding:12px 14px 0;border-bottom:1px solid var(--border);}
 .wk-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .wk-mon{font-size:15px;font-weight:700;}
@@ -71,17 +70,14 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .day-d{font-size:15px;font-weight:700;}
 .day-dots{display:flex;gap:2px;min-height:5px;margin-top:1px;}
 .day-dot{width:4px;height:4px;border-radius:50%;}
-/* DATE HEADER */
 .dhdr{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;}
 .dhdr-t{font-size:14px;font-weight:600;color:var(--muted);}
-/* FAB */
-.fab{position:fixed;right:16px;bottom:calc(var(--nav) + 14px);width:54px;height:54px;border-radius:27px;background:var(--teal);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(11,110,80,.45);z-index:40;transition:transform .15s,box-shadow .15s;}
-.fab:hover{transform:scale(1.05);box-shadow:0 6px 18px rgba(11,110,80,.5);}
+.fab{position:fixed;right:16px;bottom:calc(var(--nav) + 14px);width:54px;height:54px;border-radius:27px;background:var(--teal);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(11,110,80,.45);z-index:40;transition:transform .15s;}
+.fab:hover{transform:scale(1.05);}
 @media(min-width:480px){.fab{right:calc(50% - 240px + 16px);}}
-/* REMINDERS */
-.rc{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px;}
+.rc{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px;}
 .rc.overdue{border:1.5px solid #FECACA;}
-.rc-chk{width:24px;height:24px;border-radius:12px;border:2.5px solid;flex-shrink:0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s;}
+.rc-chk{width:24px;height:24px;border-radius:12px;border:2.5px solid;flex-shrink:0;background:none;cursor:pointer;}
 .rc-chk.tinggi{border-color:var(--red);}
 .rc-chk.sedang{border-color:var(--amber);}
 .rc-chk.rendah{border-color:var(--green);}
@@ -99,14 +95,11 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .done-card{background:var(--gray-l);border-radius:10px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;opacity:.65;}
 .done-chk{width:22px;height:22px;border-radius:11px;background:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .done-txt{font-size:14px;text-decoration:line-through;color:var(--muted);flex:1;}
-/* MINI REM */
 .mini-rem{background:var(--card);border-radius:12px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
 .mini-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-/* EMPTY */
 .empty{text-align:center;padding:48px 20px;color:var(--muted);}
 .empty-ico{font-size:40px;margin-bottom:12px;}
 .empty-txt{font-size:14px;font-weight:600;}
-/* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;flex-direction:column;justify-content:flex-end;animation:faIn .2s;}
 .sheet{background:#fff;border-radius:24px 24px 0 0;padding:8px 20px 40px;max-height:92vh;overflow-y:auto;animation:slUp .25s cubic-bezier(.34,1.1,.64,1);}
 @keyframes faIn{from{opacity:0}to{opacity:1}}
@@ -114,29 +107,23 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 18px;}
 .sheet-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .sheet-title{font-size:18px;font-weight:800;}
-/* FORM */
 .fg{margin-bottom:15px;}
 .flabel{font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
 .finput{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;color:var(--text);background:#fff;outline:none;transition:border-color .15s;}
 .finput:focus{border-color:var(--teal);}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-/* SELECTOR BUTTONS */
-.wp-grid{display:flex;gap:8px;}
-.wp-btn{flex:1;padding:10px 6px;border-radius:12px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;text-align:center;transition:all .15s;}
+.wp-grid,.prio-grid{display:flex;gap:8px;}
+.wp-btn,.prio-btn{flex:1;padding:10px 6px;border-radius:12px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;text-align:center;transition:all .15s;}
 .wp-btn.sp{border-color:var(--teal);background:var(--teal-l);color:var(--teal-d);}
 .wp-btn.sk{border-color:var(--amber);background:var(--amber-l);color:var(--amber-d);}
 .wp-btn.sl{border-color:var(--gray);background:var(--gray-l);color:#374151;}
-.prio-grid{display:flex;gap:8px;}
-.prio-btn{flex:1;padding:10px 6px;border-radius:12px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;text-align:center;transition:all .15s;}
 .prio-btn.st{border-color:var(--red);background:var(--red-l);color:var(--red);}
 .prio-btn.ss{border-color:var(--amber);background:var(--amber-l);color:var(--amber-d);}
 .prio-btn.sr{border-color:var(--green);background:var(--green-l);color:#065F46;}
-/* TYPE CHIPS */
 .type-scroll{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .type-scroll::-webkit-scrollbar{display:none;}
 .tchip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;white-space:nowrap;transition:all .15s;flex-shrink:0;}
 .tchip.on{border-color:var(--teal);background:var(--teal-l);color:var(--teal-d);}
-/* TOGGLE */
 .toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
 .tog{width:48px;height:28px;border-radius:14px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
 .tog.on{background:var(--teal);}
@@ -145,419 +132,335 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .tog.on .tog-k{left:23px;}
 .tog.off .tog-k{left:3px;}
 .tog-lbl{font-size:14px;font-weight:600;}
-/* BUTTONS */
-.btn-p{width:100%;padding:15px;background:var(--teal);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s,opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-p{width:100%;padding:15px;background:var(--teal);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .btn-p:disabled{background:#D1D5DB;cursor:not-allowed;}
 .btn-p:not(:disabled):hover{background:var(--teal-d);}
-.btn-sm{padding:8px 16px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:background .15s;}
+.btn-sm{padding:8px 16px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;display:inline-flex;align-items:center;gap:5px;}
 .btn-sm.primary{background:var(--teal);color:#fff;}
-.btn-sm.primary:hover{background:var(--teal-d);}
-/* WORK INDICATOR */
 .wp-pill{display:inline-flex;align-items:center;gap:6px;}
 .wp-dot{width:8px;height:8px;border-radius:50%;}
 </style>
 </head>
 <body>
-<div class="app" id="app"></div>
+
+<div class="loading" id="loading">
+  <div class="loading-ico">📅</div>
+  <div class="loading-txt">Memuat JadwalKu...</div>
+  <div class="loading-sub">Menyambungkan ke Firebase</div>
+</div>
+<div class="sync-dot" id="sdot" title="Tersinkron"></div>
+<div class="app" id="app" style="display:none;"></div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-// ─── CONSTANTS ───────────────────────────────────────
-const WP={puskesmas:{n:'Puskesmas',c:'#0B6E50',l:'#E0F2EB',d:'#074F39'},kampus:{n:'Kampus',c:'#B45309',l:'#FEF3C7',d:'#92400E'},lainnya:{n:'Lainnya',c:'#6B7280',l:'#F3F4F6',d:'#374151'}};
+/* ================================================================
+   LANGKAH SETUP:
+
+   1. Buka https://console.firebase.google.com
+   2. Buat project baru (atau pakai yang sudah ada)
+   3. Klik "Web" (</>), daftarkan app, copy firebaseConfig
+   4. Paste di bawah ini (ganti semua nilai GANTI_...)
+   5. Di Firebase Console: Build > Firestore Database > Create database
+      Pilih "Start in test mode" (bisa dibatasi nanti)
+   6. Upload file ini ke GitHub Pages seperti biasa
+   7. Buka di HP dan laptop → data otomatis sync!
+   ================================================================ */
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyAUtXcfrtoM94wDpWQO5s_Y5MoH3OeArL4", 
+  authDomain:        "jadwal-dinasku.firebaseapp.com", 
+  projectId:         "jadwal-dinasku", 
+  storageBucket:     "jadwal-dinasku.firebasestorage.app", 
+  messagingSenderId: "353737438755", 
+  appId:             "1:353737438755:web:b4f5faad40e7f6416e2396"
+};
+
+// ── INIT ─────────────────────────────────────
+firebase.initializeApp(firebaseConfig);
+const db    = firebase.firestore();
+const ECOL  = db.collection('jadwal_events');
+const RCOL  = db.collection('jadwal_reminders');
+
+// ── ICONS ────────────────────────────────────
+const I={
+  home:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  cal:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  bell:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+  plus:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  p14:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  edit:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  del:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4h6v2"/></svg>',
+  x:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  cl:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
+  cr:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
+  clk:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  chk:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  bs:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0B6E50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+};
+
+// ── CONFIG ───────────────────────────────────
+const WP={
+  puskesmas:{n:'Puskesmas',c:'#0B6E50',l:'#E0F2EB',d:'#074F39'},
+  kampus:{n:'Kampus',c:'#B45309',l:'#FEF3C7',d:'#92400E'},
+  lainnya:{n:'Lainnya',c:'#6B7280',l:'#F3F4F6',d:'#374151'},
+};
 const TYPES=['Jaga UGD','Poli','Visite','Kuliah','Tutorial','Ujian','Meeting','Seminar','Konsultasi','Lainnya'];
 const DS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
 const DF=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 const MO=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const PC={tinggi:'#DC2626',sedang:'#B45309',rendah:'#059669'};
-const PB={tinggi:'#FEE2E2',sedang:'#FEF3C7',rendah:'#D1FAE5'};
 
-// ─── SVG ICONS ───────────────────────────────────────
-const ICO={
-  home:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-  cal:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
-  bell:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
-  plus:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
-  plus14:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
-  edit:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
-  trash:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4h6v2"/></svg>',
-  x:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-  chevL:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
-  chevR:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
-  clock:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-  check:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-  bellSm:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0B6E50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
-};
+// ── HELPERS ──────────────────────────────────
+const pad=n=>String(n).padStart(2,'0');
+const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const pd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
+const TODAY=dstr(new Date());
+const ddiff=s=>{const d=pd(s);const t=new Date();t.setHours(0,0,0,0);return Math.ceil((d-t)/86400000);};
+const dlbl=s=>{const n=ddiff(s);return n<0?`⚠ Lewat ${Math.abs(n)} hari`:n===0?'Hari ini':n===1?'Besok':`${n} hari lagi`;};
+const fdate=s=>{const d=pd(s);return `${DF[d.getDay()]}, ${d.getDate()} ${MO[d.getMonth()]}`;};
 
-// ─── HELPERS ─────────────────────────────────────────
-function pad(n){return String(n).padStart(2,'0');}
-function dstr(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
-function pd(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
-function todayStr(){const d=new Date();return dstr(d);}
-function diff(s){const d=pd(s);const t=new Date();t.setHours(0,0,0,0);return Math.ceil((d-t)/86400000);}
-function diffLabel(s){const n=diff(s);return n<0?`⚠ Lewat ${Math.abs(n)} hari`:n===0?'Hari ini':n===1?'Besok':`${n} hari lagi`;}
-function fmtDate(s){const d=pd(s);return `${DF[d.getDay()]}, ${d.getDate()} ${MO[d.getMonth()]}`;}
-
-// ─── STORAGE ─────────────────────────────────────────
-const TODAY = todayStr();
-const SEED_EVTS=[
-  {id:1,title:'Jaga UGD Pagi',date:'2026-04-15',start:'07:00',end:'14:00',wp:'puskesmas',type:'Jaga UGD',notes:'Bawa stetoskop & buku rekam medis',reminder:true},
-  {id:2,title:'Kuliah Patologi',date:'2026-04-15',start:'16:00',end:'18:00',wp:'kampus',type:'Kuliah',notes:'Materi: Patologi Infeksi Bab 4',reminder:true},
-  {id:3,title:'Meeting Kurikulum',date:'2026-04-16',start:'09:00',end:'11:00',wp:'kampus',type:'Meeting',notes:'',reminder:false},
-  {id:4,title:'Poli Umum',date:'2026-04-17',start:'08:00',end:'12:00',wp:'puskesmas',type:'Poli',notes:'',reminder:true},
-  {id:5,title:'Tutorial Blok 4',date:'2026-04-18',start:'13:00',end:'15:00',wp:'kampus',type:'Tutorial',notes:'Kelompok A & B',reminder:false},
-  {id:6,title:'Jaga UGD Sore',date:'2026-04-19',start:'14:00',end:'21:00',wp:'puskesmas',type:'Jaga UGD',notes:'',reminder:true},
-  {id:7,title:'Ujian Blok 4',date:'2026-04-20',start:'08:00',end:'10:00',wp:'kampus',type:'Ujian',notes:'Hadir 30 menit sebelumnya',reminder:true},
-];
-const SEED_REMS=[
-  {id:1,text:'Perpanjang SIP',date:'2026-04-30',done:false,priority:'tinggi'},
-  {id:2,text:'Laporan bulanan Puskesmas',date:'2026-04-25',done:false,priority:'sedang'},
-  {id:3,text:'Upload nilai mahasiswa',date:'2026-04-22',done:false,priority:'tinggi'},
-  {id:4,text:'Bayar iuran IDI',date:'2026-05-01',done:false,priority:'rendah'},
-];
-
-function load(k,seed){try{const s=localStorage.getItem(k);return s?JSON.parse(s):seed;}catch(e){return seed;}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-
-// ─── STATE ────────────────────────────────────────────
-const S={
-  tab:'today',
-  events:load('jk_evts',SEED_EVTS),
-  rems:load('jk_rems',SEED_REMS),
-  selDate:TODAY,
-  wkOff:0,
-  modal:null,
-  // modal: {type:'event'|'reminder', data:obj|null, defDate:str}
-};
-
-// Form tracking vars (updated by UI, read on submit)
+// ── STATE ────────────────────────────────────
+const S={tab:'today',events:[],rems:[],selDate:TODAY,wkOff:0,modal:null,ready:false};
 let _wp='puskesmas',_type='Poli',_rem=false,_prio='sedang';
 
-// ─── MUTATIONS ────────────────────────────────────────
-function addEvt(f){S.events=[...S.events,{...f,id:Date.now()}];save('jk_evts',S.events);}
-function updEvt(f){S.events=S.events.map(e=>e.id===f.id?f:e);save('jk_evts',S.events);}
-function delEvt(id){if(!confirm('Hapus jadwal ini?'))return;S.events=S.events.filter(e=>e.id!==id);save('jk_evts',S.events);render();}
-function addRem(r){S.rems=[...S.rems,{...r,id:Date.now(),done:false}];save('jk_rems',S.rems);}
-function togRem(id){S.rems=S.rems.map(r=>r.id===id?{...r,done:!r.done}:r);save('jk_rems',S.rems);render();}
-function delRem(id){S.rems=S.rems.filter(r=>r.id!==id);save('jk_rems',S.rems);render();}
+// ── SYNC DOT ─────────────────────────────────
+const sdot=()=>document.getElementById('sdot');
+const setSyncing=v=>{const d=sdot();if(d){d.className='sync-dot'+(v?' syncing':'');d.title=v?'Menyimpan...':'Tersinkron';}};
 
-// ─── OPEN / CLOSE ─────────────────────────────────────
-function openAddEvt(date){_wp='puskesmas';_type='Poli';_rem=false;S.modal={type:'event',data:null,defDate:date};render();}
-function openEditEvt(id){const e=S.events.find(x=>x.id===id);if(!e)return;_wp=e.wp;_type=e.type;_rem=e.reminder;S.modal={type:'event',data:{...e}};render();}
+// ── FIREBASE OPS ─────────────────────────────
+async function addEvt(f){setSyncing(true);try{await ECOL.add(f);}finally{setSyncing(false);}}
+async function updEvt(id,f){setSyncing(true);const{id:_,...data}=f;try{await ECOL.doc(id).update(data);}finally{setSyncing(false);}}
+async function delEvt(id){if(!confirm('Hapus jadwal ini?'))return;setSyncing(true);try{await ECOL.doc(id).delete();}finally{setSyncing(false);}}
+async function addRem(r){setSyncing(true);try{await RCOL.add({...r,done:false});}finally{setSyncing(false);}}
+async function togRem(id,done){setSyncing(true);try{await RCOL.doc(id).update({done:!done});}finally{setSyncing(false);}}
+async function delRem(id){setSyncing(true);try{await RCOL.doc(id).delete();}finally{setSyncing(false);}}
+
+// ── LISTENERS ────────────────────────────────
+function boot(){
+  let eReady=false,rReady=false;
+
+  ECOL.onSnapshot(snap=>{
+    S.events=snap.docs.map(d=>({id:d.id,...d.data()}));
+    eReady=true;
+    if(eReady&&rReady)show();
+    else if(S.ready)render();
+  },()=>{eReady=true;if(eReady&&rReady)show();});
+
+  RCOL.onSnapshot(snap=>{
+    S.rems=snap.docs.map(d=>({id:d.id,...d.data()}));
+    rReady=true;
+    if(eReady&&rReady)show();
+    else if(S.ready)render();
+  },()=>{rReady=true;if(eReady&&rReady)show();});
+
+  // Timeout fallback 6 detik
+  setTimeout(()=>{if(!S.ready)show();},6000);
+}
+
+function show(){
+  if(S.ready)return;
+  S.ready=true;
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='block';
+  render();
+}
+
+// ── MODAL OPEN/CLOSE ─────────────────────────
+function openAddEvt(date){_wp='puskesmas';_type='Poli';_rem=false;S.modal={type:'event',data:null,dd:date};render();}
+function openEditEvt(id){
+  const e=S.events.find(x=>x.id===id);if(!e)return;
+  _wp=e.wp||'puskesmas';_type=e.type||'Poli';_rem=!!e.reminder;
+  S.modal={type:'event',data:{...e}};render();
+}
 function openAddRem(){_prio='sedang';S.modal={type:'reminder'};render();}
 function closeModal(){S.modal=null;render();}
 function bgClose(ev){if(ev.target.classList.contains('overlay'))closeModal();}
 
-// ─── FORM INTERACTIONS ────────────────────────────────
+// ── FORM HANDLERS ────────────────────────────
 function pickWp(wp){
   _wp=wp;
-  document.querySelectorAll('.wp-btn').forEach(b=>{
-    const k=b.dataset.wp;
-    b.className='wp-btn'+(k===wp?{puskesmas:' sp',kampus:' sk',lainnya:' sl'}[k]:'');
-  });
+  const cls={puskesmas:'sp',kampus:'sk',lainnya:'sl'};
+  document.querySelectorAll('.wp-btn').forEach(b=>{b.className='wp-btn'+(b.dataset.w===wp?' '+cls[wp]:'');});
 }
 function pickType(t){
   _type=t;
   document.querySelectorAll('.tchip').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
 }
-function togRemForm(){
+function togRF(){
   _rem=!_rem;
-  const btn=document.getElementById('ftog');
-  if(btn)btn.className='tog '+(_rem?'on':'off');
+  const b=document.getElementById('ftog');if(b)b.className='tog '+(_rem?'on':'off');
 }
 function pickPrio(p){
   _prio=p;
-  document.querySelectorAll('.prio-btn').forEach(b=>b.className='prio-btn'+({tinggi:' st',sedang:' ss',rendah:' sr'}[b.dataset.p]===(' '+{tinggi:'st',sedang:'ss',rendah:'sr'}[p])?' '+{tinggi:'st',sedang:'ss',rendah:'sr'}[p]:''));
-  // cleaner:
-  document.querySelectorAll('.prio-btn').forEach(b=>{
-    const cls={tinggi:'st',sedang:'ss',rendah:'sr'};
-    b.className='prio-btn'+(b.dataset.p===p?' '+cls[p]:'');
-  });
+  const cls={tinggi:'st',sedang:'ss',rendah:'sr'};
+  document.querySelectorAll('.prio-btn').forEach(b=>{b.className='prio-btn'+(b.dataset.p===p?' '+cls[p]:'');});
 }
-function fInput(){
-  const t=(document.getElementById('ft')?.value||'').trim();
-  const s=document.getElementById('fsub');
-  if(s)s.disabled=!t;
-}
-function rInput(){
-  const t=(document.getElementById('rt')?.value||'').trim();
-  const s=document.getElementById('rsub');
-  if(s)s.disabled=!t;
-}
+function fIn(){const t=(document.getElementById('ft')?.value||'').trim();const s=document.getElementById('fsub');if(s)s.disabled=!t;}
+function rIn(){const t=(document.getElementById('rt')?.value||'').trim();const s=document.getElementById('rsub');if(s)s.disabled=!t;}
 
-function submitEvt(){
+async function submitEvt(){
   const title=(document.getElementById('ft')?.value||'').trim();
   if(!title)return;
-  const form={
-    title,
-    date:document.getElementById('fd')?.value||TODAY,
-    start:document.getElementById('fs')?.value||'08:00',
-    end:document.getElementById('fe')?.value||'10:00',
-    wp:_wp,type:_type,
-    notes:document.getElementById('fn')?.value||'',
-    reminder:_rem,
-  };
-  if(S.modal?.data){updEvt({...form,id:S.modal.data.id});}
-  else{addEvt(form);}
+  const editId=document.getElementById('feid')?.value;
+  const f={title,date:document.getElementById('fd')?.value||TODAY,start:document.getElementById('fs')?.value||'08:00',end:document.getElementById('fe')?.value||'10:00',wp:_wp,type:_type,notes:document.getElementById('fn')?.value||'',reminder:_rem};
   S.modal=null;render();
+  if(editId)await updEvt(editId,f);else await addEvt(f);
 }
-function submitRem(){
-  const text=(document.getElementById('rt')?.value||'').trim();
-  if(!text)return;
-  addRem({text,date:document.getElementById('rd')?.value||TODAY,priority:_prio});
-  S.modal=null;render();
+async function submitRem(){
+  const text=(document.getElementById('rt')?.value||'').trim();if(!text)return;
+  const r={text,date:document.getElementById('rd')?.value||TODAY,priority:_prio};
+  S.modal=null;render();await addRem(r);
 }
 
-// ─── RENDER HELPERS ───────────────────────────────────
-function evtCard(e){
-  const w=WP[e.wp];
-  return `<div class="ec ${e.wp}">
+// ── EVENT CARD ───────────────────────────────
+function EC(e){
+  const w=WP[e.wp]||WP.lainnya;
+  return `<div class="ec ${e.wp||'lainnya'}">
     <div class="ec-info">
-      <div class="ec-badges">
-        <span class="badge b-${e.wp}">${w.n}</span>
-        <span class="badge b-type">${e.type}</span>
-        ${e.reminder?`<span style="display:flex;align-items:center;">${ICO.bellSm}</span>`:''}
-      </div>
+      <div class="ec-badges"><span class="badge b-${e.wp||'lainnya'}">${w.n}</span><span class="badge b-type">${e.type||''}</span>${e.reminder?I.bs:''}</div>
       <div class="ec-title">${e.title}</div>
-      <div class="ec-time">${ICO.clock} ${e.start} – ${e.end}</div>
+      <div class="ec-time">${I.clk} ${e.start||''} – ${e.end||''}</div>
       ${e.notes?`<div class="ec-notes">${e.notes}</div>`:''}
     </div>
     <div class="ec-acts">
-      <button class="ibtn" onclick="openEditEvt(${e.id})">${ICO.edit}</button>
-      <button class="ibtn" onclick="delEvt(${e.id})">${ICO.trash}</button>
+      <button class="ibtn" onclick="openEditEvt('${e.id}')">${I.edit}</button>
+      <button class="ibtn" onclick="delEvt('${e.id}')">${I.del}</button>
     </div>
   </div>`;
 }
 
-// ─── VIEWS ───────────────────────────────────────────
+// ── VIEWS ────────────────────────────────────
 function vToday(){
-  const td=new Date();
-  const te=S.events.filter(e=>e.date===TODAY).sort((a,b)=>a.start.localeCompare(b.start));
+  const now=new Date();
+  const te=S.events.filter(e=>e.date===TODAY).sort((a,b)=>(a.start||'').localeCompare(b.start||''));
   const up=S.rems.filter(r=>!r.done).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);
   const wps=[...new Set(te.map(e=>e.wp))];
   return `
     <div class="hdr">
-      <div class="hdr-sub">${DF[td.getDay()]}, ${td.getDate()} ${MO[td.getMonth()]} ${td.getFullYear()}</div>
+      <div class="hdr-sub">${DF[now.getDay()]}, ${now.getDate()} ${MO[now.getMonth()]} ${now.getFullYear()}</div>
       <div class="hdr-title">Selamat Datang 👋</div>
     </div>
     <div class="content">
       <div class="stats">
-        <div class="stat">
-          <div class="stat-l">Jadwal Hari Ini</div>
-          <div class="stat-v">${te.length}</div>
-          <div class="stat-s">kegiatan</div>
-        </div>
-        <div class="stat">
-          <div class="stat-l">Tempat Kerja</div>
-          ${wps.length===0
-            ?'<div style="font-size:14px;color:var(--muted);margin-top:6px;">Hari Libur 🌿</div>'
-            :wps.map(w=>`<div class="wp-pill" style="margin-top:5px;"><div class="wp-dot" style="background:${WP[w].c};"></div><span style="font-size:13px;font-weight:700;">${WP[w].n}</span></div>`).join('')}
+        <div class="stat"><div class="stat-l">Jadwal Hari Ini</div><div class="stat-v">${te.length}</div><div class="stat-s">kegiatan</div></div>
+        <div class="stat"><div class="stat-l">Tempat Kerja</div>
+          ${wps.length===0?'<div style="font-size:14px;color:var(--muted);margin-top:6px;">Hari Libur 🌿</div>':wps.map(w=>`<div class="wp-pill" style="margin-top:5px;"><div class="wp-dot" style="background:${WP[w]?.c};"></div><span style="font-size:13px;font-weight:700;">${WP[w]?.n}</span></div>`).join('')}
         </div>
       </div>
-      ${te.length>0?`<div class="sec-lbl">Jadwal Hari Ini</div>${te.map(evtCard).join('')}`
-        :`<div class="card" style="text-align:center;padding:28px;">
-          <div style="font-size:36px;margin-bottom:10px;">📅</div>
-          <div style="font-size:14px;font-weight:600;color:var(--muted);margin-bottom:14px;">Tidak ada jadwal hari ini</div>
-          <button class="btn-sm primary" onclick="openAddEvt('${TODAY}')">${ICO.plus14} Tambah Jadwal</button>
-        </div>`}
-      ${up.length>0?`<div class="sec-lbl">Pengingat Mendatang</div>${up.map(r=>`
-        <div class="mini-rem">
-          <div class="mini-dot" style="background:${PC[r.priority]};"></div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:14px;font-weight:700;margin-bottom:2px;">${r.text}</div>
-            <div style="font-size:12px;color:var(--muted);">${diffLabel(r.date)} · ${pd(r.date).getDate()} ${MO[pd(r.date).getMonth()]}</div>
-          </div>
-          <span class="pbadge p-${r.priority}">${r.priority.charAt(0).toUpperCase()+r.priority.slice(1)}</span>
-        </div>`).join('')}`:''}
+      ${te.length>0?`<div class="sec-lbl">Jadwal Hari Ini</div>${te.map(EC).join('')}`:`<div style="background:var(--card);border-radius:14px;padding:28px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:12px;"><div style="font-size:36px;margin-bottom:10px;">📅</div><div style="font-size:14px;font-weight:600;color:var(--muted);margin-bottom:14px;">Tidak ada jadwal hari ini</div><button class="btn-sm primary" onclick="openAddEvt('${TODAY}')">${I.p14} Tambah Jadwal</button></div>`}
+      ${up.length>0?`<div class="sec-lbl">Pengingat Mendatang</div>${up.map(r=>`<div class="mini-rem"><div class="mini-dot" style="background:${PC[r.priority]};"></div><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:700;margin-bottom:2px;">${r.text}</div><div style="font-size:12px;color:var(--muted);">${dlbl(r.date)} · ${pd(r.date).getDate()} ${MO[pd(r.date).getMonth()]}</div></div><span class="pbadge p-${r.priority}">${r.priority.charAt(0).toUpperCase()+r.priority.slice(1)}</span></div>`).join('')}`:''}
     </div>
-    <button class="fab" onclick="openAddEvt('${TODAY}')">${ICO.plus}</button>`;
+    <button class="fab" onclick="openAddEvt('${TODAY}')">${I.plus}</button>`;
 }
 
 function vSchedule(){
   const ws=new Date(pd(S.selDate));
-  const dow=ws.getDay();
-  ws.setDate(ws.getDate()-(dow===0?6:dow-1)+S.wkOff*7);
+  const dow=ws.getDay();ws.setDate(ws.getDate()-(dow===0?6:dow-1)+S.wkOff*7);
   const days=Array.from({length:7},(_,i)=>{const d=new Date(ws);d.setDate(d.getDate()+i);return d;});
   const sel=S.selDate;
-  const se=S.events.filter(e=>e.date===sel).sort((a,b)=>a.start.localeCompare(b.start));
+  const se=S.events.filter(e=>e.date===sel).sort((a,b)=>(a.start||'').localeCompare(b.start||''));
   const sd=pd(sel);
   return `
     <div class="hdr"><div class="hdr-title">Jadwal</div></div>
     <div class="wk-hdr">
       <div class="wk-nav">
-        <button class="wk-nbtn" onclick="shiftWk(-1)">${ICO.chevL}</button>
+        <button class="wk-nbtn" onclick="shiftWk(-1)">${I.cl}</button>
         <span class="wk-mon">${MO[days[0].getMonth()]} ${days[0].getFullYear()}</span>
-        <button class="wk-nbtn" onclick="shiftWk(1)">${ICO.chevR}</button>
+        <button class="wk-nbtn" onclick="shiftWk(1)">${I.cr}</button>
       </div>
       <div class="wk-days">
         ${days.map(d=>{
-          const ds=dstr(d);
-          const evts=S.events.filter(e=>e.date===ds);
-          const wps=[...new Set(evts.map(e=>e.wp))];
-          const isSel=ds===sel;const isTd=ds===TODAY;
-          return `<button class="day-btn ${isSel?'sel':isTd?'today':''}" onclick="selDate('${ds}')">
-            <span class="day-n">${DS[d.getDay()]}</span>
-            <span class="day-d">${d.getDate()}</span>
-            <div class="day-dots">${wps.map(w=>`<div class="day-dot" style="background:${isSel?'rgba(255,255,255,.8)':WP[w].c};"></div>`).join('')}</div>
-          </button>`;
+          const ds=dstr(d);const wps=[...new Set(S.events.filter(e=>e.date===ds).map(e=>e.wp))];
+          const isSel=ds===sel,isTd=ds===TODAY;
+          return `<button class="day-btn ${isSel?'sel':isTd?'today':''}" onclick="selDate('${ds}')"><span class="day-n">${DS[d.getDay()]}</span><span class="day-d">${d.getDate()}</span><div class="day-dots">${wps.map(w=>`<div class="day-dot" style="background:${isSel?'rgba(255,255,255,.8)':WP[w]?.c||'#888'};"></div>`).join('')}</div></button>`;
         }).join('')}
       </div>
     </div>
-    <div class="dhdr">
-      <span class="dhdr-t">${fmtDate(sel)}</span>
-      <button class="btn-sm primary" onclick="openAddEvt('${sel}')">${ICO.plus14} Tambah</button>
-    </div>
+    <div class="dhdr"><span class="dhdr-t">${fdate(sel)}</span><button class="btn-sm primary" onclick="openAddEvt('${sel}')">${I.p14} Tambah</button></div>
     <div class="content" style="padding-top:4px;">
-      ${se.length===0?`<div class="empty"><div class="empty-ico">📋</div><div class="empty-txt">Belum ada jadwal</div></div>`:se.map(evtCard).join('')}
+      ${se.length===0?`<div class="empty"><div class="empty-ico">📋</div><div class="empty-txt">Belum ada jadwal</div></div>`:se.map(EC).join('')}
     </div>`;
 }
 
-function vReminders(){
+function vRems(){
   const active=S.rems.filter(r=>!r.done).sort((a,b)=>a.date.localeCompare(b.date));
   const done=S.rems.filter(r=>r.done);
   return `
     <div class="hdr"><div class="hdr-title">Pengingat</div></div>
     <div class="content">
       ${active.length===0&&done.length===0?`<div class="empty"><div class="empty-ico">🔔</div><div class="empty-txt">Belum ada pengingat</div></div>`:''}
-      ${active.map(r=>{
-        const n=diff(r.date);const ov=n<0;
-        return `<div class="rc ${ov?'overdue':''}">
-          <button class="rc-chk ${r.priority}" onclick="togRem(${r.id})"></button>
-          <div class="rc-body">
-            <div class="rc-title">${r.text}</div>
-            <div class="rc-meta">
-              <span class="rc-date ${ov?'ov':''}">${diffLabel(r.date)} · ${pd(r.date).getDate()} ${MO[pd(r.date).getMonth()]}</span>
-              <span class="pbadge p-${r.priority}">${r.priority.charAt(0).toUpperCase()+r.priority.slice(1)}</span>
-            </div>
-          </div>
-          <button class="ibtn" onclick="delRem(${r.id})">${ICO.trash}</button>
-        </div>`;
-      }).join('')}
-      ${done.length>0?`<div class="done-sec">
-        <div class="done-lbl">Selesai (${done.length})</div>
-        ${done.map(r=>`<div class="done-card">
-          <div class="done-chk">${ICO.check}</div>
-          <div class="done-txt">${r.text}</div>
-          <button class="ibtn" onclick="delRem(${r.id})">${ICO.x}</button>
-        </div>`).join('')}
-      </div>`:''}
+      ${active.map(r=>{const n=ddiff(r.date),ov=n<0;return `<div class="rc ${ov?'overdue':''}"><button class="rc-chk ${r.priority}" onclick="togRem('${r.id}',${r.done})"></button><div class="rc-body"><div class="rc-title">${r.text}</div><div class="rc-meta"><span class="rc-date ${ov?'ov':''}">${dlbl(r.date)} · ${pd(r.date).getDate()} ${MO[pd(r.date).getMonth()]}</span><span class="pbadge p-${r.priority}">${r.priority.charAt(0).toUpperCase()+r.priority.slice(1)}</span></div></div><button class="ibtn" onclick="delRem('${r.id}')">${I.del}</button></div>`;}).join('')}
+      ${done.length>0?`<div class="done-sec"><div class="done-lbl">Selesai (${done.length})</div>${done.map(r=>`<div class="done-card"><div class="done-chk">${I.chk}</div><div class="done-txt">${r.text}</div><button class="ibtn" onclick="delRem('${r.id}')">${I.x}</button></div>`).join('')}</div>`:''}
       <div style="height:16px;"></div>
-      <button class="btn-p" onclick="openAddRem()">${ICO.plus14} Tambah Pengingat</button>
+      <button class="btn-p" onclick="openAddRem()">${I.p14} Tambah Pengingat</button>
     </div>`;
 }
 
-// ─── MODALS ───────────────────────────────────────────
-function mEvent(){
+// ── MODALS ───────────────────────────────────
+function mEvt(){
   const isEdit=!!S.modal?.data;
-  const f=S.modal?.data||{title:'',date:S.modal?.defDate||TODAY,start:'08:00',end:'10:00',wp:'puskesmas',type:'Poli',notes:'',reminder:false};
-  const wCls={puskesmas:'sp',kampus:'sk',lainnya:'sl'};
-  const initWp=_wp;const initType=_type;const initRem=_rem;
-  return `<div class="overlay" onclick="bgClose(event)">
-    <div class="sheet" onclick="event.stopPropagation()">
-      <div class="handle"></div>
-      <div class="sheet-hdr">
-        <div class="sheet-title">${isEdit?'Edit Jadwal':'Tambah Jadwal'}</div>
-        <button class="ibtn" onclick="closeModal()">${ICO.x}</button>
-      </div>
-      <div class="fg">
-        <label class="flabel">Judul Kegiatan *</label>
-        <input class="finput" id="ft" value="${f.title}" placeholder="Nama kegiatan..." oninput="fInput()">
-      </div>
-      <div class="fg">
-        <label class="flabel">Tanggal</label>
-        <input class="finput" id="fd" type="date" value="${f.date}">
-      </div>
-      <div class="frow fg">
-        <div><label class="flabel">Mulai</label><input class="finput" id="fs" type="time" value="${f.start}"></div>
-        <div><label class="flabel">Selesai</label><input class="finput" id="fe" type="time" value="${f.end}"></div>
-      </div>
-      <div class="fg">
-        <label class="flabel">Tempat Kerja</label>
-        <div class="wp-grid">
-          ${Object.entries(WP).map(([k,v])=>`<button class="wp-btn ${initWp===k?wCls[k]:''}" data-wp="${k}" onclick="pickWp('${k}')">${v.n}</button>`).join('')}
-        </div>
-      </div>
-      <div class="fg">
-        <label class="flabel">Jenis Kegiatan</label>
-        <div class="type-scroll">
-          ${TYPES.map(t=>`<button class="tchip ${initType===t?'on':''}" data-t="${t}" onclick="pickType('${t}')">${t}</button>`).join('')}
-        </div>
-      </div>
-      <div class="fg">
-        <label class="flabel">Catatan</label>
-        <textarea class="finput" id="fn" rows="2" placeholder="Catatan tambahan..." style="resize:none;line-height:1.5;">${f.notes}</textarea>
-      </div>
-      <div class="toggle-row">
-        <button class="tog ${initRem?'on':'off'}" id="ftog" onclick="togRemForm()"><div class="tog-k"></div></button>
-        <span class="tog-lbl">Aktifkan pengingat</span>
-      </div>
-      <button class="btn-p" id="fsub" onclick="submitEvt()" ${!f.title?'disabled':''}>
-        ${ICO.plus14} ${isEdit?'Simpan Perubahan':'Tambah Jadwal'}
-      </button>
+  const f=S.modal?.data||{title:'',date:S.modal?.dd||TODAY,start:'08:00',end:'10:00',wp:'puskesmas',type:'Poli',notes:'',reminder:false};
+  const wc={puskesmas:'sp',kampus:'sk',lainnya:'sl'};
+  return `<div class="overlay" onclick="bgClose(event)"><div class="sheet" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <div class="sheet-hdr"><div class="sheet-title">${isEdit?'Edit Jadwal':'Tambah Jadwal'}</div><button class="ibtn" onclick="closeModal()">${I.x}</button></div>
+    ${isEdit?`<input type="hidden" id="feid" value="${f.id}">`:''}
+    <div class="fg"><label class="flabel">Judul Kegiatan *</label><input class="finput" id="ft" value="${f.title||''}" placeholder="Nama kegiatan..." oninput="fIn()"></div>
+    <div class="fg"><label class="flabel">Tanggal</label><input class="finput" id="fd" type="date" value="${f.date||TODAY}"></div>
+    <div class="frow fg">
+      <div><label class="flabel">Mulai</label><input class="finput" id="fs" type="time" value="${f.start||'08:00'}"></div>
+      <div><label class="flabel">Selesai</label><input class="finput" id="fe" type="time" value="${f.end||'10:00'}"></div>
     </div>
-  </div>`;
+    <div class="fg"><label class="flabel">Tempat Kerja</label><div class="wp-grid">
+      ${Object.entries(WP).map(([k,v])=>`<button class="wp-btn ${_wp===k?wc[k]:''}" data-w="${k}" onclick="pickWp('${k}')">${v.n}</button>`).join('')}
+    </div></div>
+    <div class="fg"><label class="flabel">Jenis Kegiatan</label><div class="type-scroll">
+      ${TYPES.map(t=>`<button class="tchip ${_type===t?'on':''}" data-t="${t}" onclick="pickType('${t}')">${t}</button>`).join('')}
+    </div></div>
+    <div class="fg"><label class="flabel">Catatan</label><textarea class="finput" id="fn" rows="2" placeholder="Catatan tambahan..." style="resize:none;line-height:1.5;">${f.notes||''}</textarea></div>
+    <div class="toggle-row"><button class="tog ${_rem?'on':'off'}" id="ftog" onclick="togRF()"><div class="tog-k"></div></button><span class="tog-lbl">Aktifkan pengingat</span></div>
+    <button class="btn-p" id="fsub" onclick="submitEvt()" ${!f.title?'disabled':''}>${I.p14} ${isEdit?'Simpan Perubahan':'Tambah Jadwal'}</button>
+  </div></div>`;
 }
 
-function mReminder(){
-  const pCls={tinggi:'st',sedang:'ss',rendah:'sr'};
-  return `<div class="overlay" onclick="bgClose(event)">
-    <div class="sheet" onclick="event.stopPropagation()">
-      <div class="handle"></div>
-      <div class="sheet-hdr">
-        <div class="sheet-title">Tambah Pengingat</div>
-        <button class="ibtn" onclick="closeModal()">${ICO.x}</button>
-      </div>
-      <div class="fg">
-        <label class="flabel">Pengingat *</label>
-        <input class="finput" id="rt" placeholder="Apa yang perlu diingat?" oninput="rInput()">
-      </div>
-      <div class="fg">
-        <label class="flabel">Deadline</label>
-        <input class="finput" id="rd" type="date" value="${TODAY}">
-      </div>
-      <div class="fg">
-        <label class="flabel">Prioritas</label>
-        <div class="prio-grid">
-          ${['tinggi','sedang','rendah'].map(p=>`<button class="prio-btn ${_prio===p?pCls[p]:''}" data-p="${p}" onclick="pickPrio('${p}')">${p.charAt(0).toUpperCase()+p.slice(1)}</button>`).join('')}
-        </div>
-      </div>
-      <div style="height:12px;"></div>
-      <button class="btn-p" id="rsub" onclick="submitRem()" disabled>${ICO.plus14} Tambah Pengingat</button>
-    </div>
-  </div>`;
+function mRem(){
+  const cls={tinggi:'st',sedang:'ss',rendah:'sr'};
+  return `<div class="overlay" onclick="bgClose(event)"><div class="sheet" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <div class="sheet-hdr"><div class="sheet-title">Tambah Pengingat</div><button class="ibtn" onclick="closeModal()">${I.x}</button></div>
+    <div class="fg"><label class="flabel">Pengingat *</label><input class="finput" id="rt" placeholder="Apa yang perlu diingat?" oninput="rIn()"></div>
+    <div class="fg"><label class="flabel">Deadline</label><input class="finput" id="rd" type="date" value="${TODAY}"></div>
+    <div class="fg"><label class="flabel">Prioritas</label><div class="prio-grid">
+      ${['tinggi','sedang','rendah'].map(p=>`<button class="prio-btn ${_prio===p?cls[p]:''}" data-p="${p}" onclick="pickPrio('${p}')">${p.charAt(0).toUpperCase()+p.slice(1)}</button>`).join('')}
+    </div></div>
+    <div style="height:12px;"></div>
+    <button class="btn-p" id="rsub" onclick="submitRem()" disabled>${I.p14} Tambah Pengingat</button>
+  </div></div>`;
 }
 
-// ─── ROOT RENDER ──────────────────────────────────────
+// ── RENDER ───────────────────────────────────
 function render(){
   const pending=S.rems.filter(r=>!r.done).length;
-  let view='';
-  if(S.tab==='today')    view=vToday();
-  if(S.tab==='schedule') view=vSchedule();
-  if(S.tab==='rems')     view=vReminders();
-  let modal='';
-  if(S.modal?.type==='event')    modal=mEvent();
-  if(S.modal?.type==='reminder') modal=mReminder();
-
-  document.getElementById('app').innerHTML=`
-    <div>
-      ${view}
-      <nav class="nav">
-        ${[
-          {id:'today',lbl:'Hari Ini',ico:'home'},
-          {id:'schedule',lbl:'Jadwal',ico:'cal'},
-          {id:'rems',lbl:'Pengingat',ico:'bell'},
-        ].map(n=>`<button class="nav-btn ${S.tab===n.id?'on':''}" onclick="setTab('${n.id}')">
-          ${ICO[n.ico]}
-          <span class="nav-lbl">${n.lbl}</span>
+  let view=S.tab==='today'?vToday():S.tab==='schedule'?vSchedule():vRems();
+  let modal=S.modal?.type==='event'?mEvt():S.modal?.type==='reminder'?mRem():'';
+  document.getElementById('app').innerHTML=`<div>${view}
+    <nav class="nav">
+      ${[{id:'today',lbl:'Hari Ini',ico:'home'},{id:'schedule',lbl:'Jadwal',ico:'cal'},{id:'rems',lbl:'Pengingat',ico:'bell'}].map(n=>`
+        <button class="nav-btn ${S.tab===n.id?'on':''}" onclick="setTab('${n.id}')">
+          ${I[n.ico]}<span class="nav-lbl">${n.lbl}</span>
           ${n.id==='rems'&&pending>0?`<div class="nav-badge">${pending}</div>`:''}
         </button>`).join('')}
-      </nav>
-      ${modal}
-    </div>`;
+    </nav>${modal}</div>`;
 }
 
 function setTab(t){S.tab=t;render();}
 function selDate(d){S.selDate=d;render();}
 function shiftWk(dir){S.wkOff+=dir;render();}
 
-render();
+// ── GO ───────────────────────────────────────
+boot();
 </script>
 </body>
 </html>
