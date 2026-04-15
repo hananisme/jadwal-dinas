@@ -139,6 +139,24 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .btn-sm.primary{background:var(--teal);color:#fff;}
 .wp-pill{display:inline-flex;align-items:center;gap:6px;}
 .wp-dot{width:8px;height:8px;border-radius:50%;}
+/* ── TOAST NOTIFIKASI ── */
+.toast-wrap{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;width:calc(100% - 32px);max-width:448px;pointer-events:none;}
+.toast{background:#1C2C5B;color:#fff;border-radius:14px;padding:13px 16px;display:flex;align-items:flex-start;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);pointer-events:auto;animation:tIn .3s cubic-bezier(.34,1.1,.64,1);}
+.toast.hide{animation:tOut .25s ease-in forwards;}
+@keyframes tIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tOut{to{opacity:0;transform:translateY(-16px)}}
+.toast-ico{font-size:20px;flex-shrink:0;margin-top:1px;}
+.toast-body{flex:1;min-width:0;}
+.toast-title{font-size:14px;font-weight:700;margin-bottom:2px;}
+.toast-sub{font-size:12px;opacity:.8;line-height:1.4;}
+.toast-close{background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;padding:2px;font-size:16px;line-height:1;flex-shrink:0;}
+/* ── NOTIF PERMISSION BANNER ── */
+.notif-banner{background:linear-gradient(135deg,#1C2C5B,#6CABDD);color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(28,44,91,.2);}
+.notif-banner-body{flex:1;}
+.notif-banner-title{font-size:14px;font-weight:700;margin-bottom:3px;}
+.notif-banner-sub{font-size:12px;opacity:.85;}
+.notif-banner-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;}
+.notif-banner-btn:hover{background:rgba(255,255,255,.3);}
 </style>
 </head>
 <body>
@@ -150,6 +168,44 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 </div>
 <div class="sync-dot" id="sdot" title="Tersinkron"></div>
 <div class="app" id="app" style="display:none;"></div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- Service Worker untuk notifikasi background -->
+<script>
+if('serviceWorker' in navigator){
+  const swCode=`
+self.addEventListener('message',e=>{
+  if(e.data&&e.data.type==='SCHEDULE_NOTIF'){
+    const {id,title,body,delay}=e.data;
+    // store pending
+    if(!self._pending)self._pending={};
+    clearTimeout(self._pending[id]);
+    self._pending[id]=setTimeout(()=>{
+      self.registration.showNotification(title,{
+        body,icon:'/favicon.ico',badge:'/favicon.ico',
+        tag:id,renotify:true,
+        vibrate:[200,100,200],
+        data:{id}
+      });
+    },delay);
+  }
+  if(e.data&&e.data.type==='CANCEL_NOTIF'){
+    if(self._pending&&self._pending[e.data.id])clearTimeout(self._pending[e.data.id]);
+  }
+});
+self.addEventListener('notificationclick',e=>{
+  e.notification.close();
+  e.waitUntil(clients.matchAll({type:'window'}).then(cs=>{
+    if(cs.length)cs[0].focus();
+    else clients.openWindow('/');
+  }));
+});
+  `;
+  const blob=new Blob([swCode],{type:'application/javascript'});
+  const swUrl=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
+</script>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -229,10 +285,122 @@ let _wp='puskesmas',_type='Poli',_rem=false,_prio='sedang';
 const sdot=()=>document.getElementById('sdot');
 const setSyncing=v=>{const d=sdot();if(d){d.className='sync-dot'+(v?' syncing':'');d.title=v?'Menyimpan...':'Tersinkron';}};
 
-// ── FIREBASE OPS ─────────────────────────────
+// ── TOAST (in-app fallback) ───────────────────
+let _toastId=0;
+function showToast(ico,title,sub,dur=6000){
+  const wrap=document.getElementById('toastWrap');if(!wrap)return;
+  const id='t'+(++_toastId);
+  const el=document.createElement('div');
+  el.className='toast';el.id=id;
+  el.innerHTML=`<div class="toast-ico">${ico}</div><div class="toast-body"><div class="toast-title">${title}</div>${sub?`<div class="toast-sub">${sub}</div>`:''}  </div><button class="toast-close" onclick="dismissToast('${id}')">✕</button>`;
+  wrap.appendChild(el);
+  const t=setTimeout(()=>dismissToast(id),dur);
+  el._t=t;
+}
+function dismissToast(id){
+  const el=document.getElementById(id);if(!el)return;
+  clearTimeout(el._t);
+  el.classList.add('hide');
+  setTimeout(()=>el.remove(),300);
+}
+
+// ── NOTIFIKASI SISTEM ─────────────────────────
+let _notifPerm='default';
+let _scheduledNotifs={};   // key: eventId+type → timeoutId
+let _firedNotifs=new Set(); // untuk cegah duplikat
+
+async function reqNotifPerm(){
+  if(!('Notification' in window))return false;
+  const p=await Notification.requestPermission();
+  _notifPerm=p;
+  render();
+  if(p==='granted'){showToast('🔔','Notifikasi diaktifkan!','Kamu akan dapat pengingat sebelum jadwal mulai.');}
+  return p==='granted';
+}
+
+function canNotif(){return 'Notification' in window && Notification.permission==='granted';}
+
+// Kirim notifikasi (native atau toast fallback)
+function fireNotif(ico,title,body){
+  if(canNotif()){
+    try{new Notification(title,{body,icon:'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${ico}</text></svg>',vibrate:[200,100,200]});}
+    catch(e){showToast(ico,title,body);}
+  } else {
+    showToast(ico,title,body);
+  }
+}
+
+// Jadwalkan notifikasi untuk satu event
+function scheduleEvtNotifs(evt){
+  if(!evt.reminder||!evt.start||evt.date<TODAY)return;
+  cancelEvtNotifs(evt.id);
+
+  const now=new Date();
+  const[h,m]=evt.start.split(':').map(Number);
+  const evtTime=new Date(evt.date+'T'+evt.start);
+  if(isNaN(evtTime))return;
+
+  // 10 menit sebelum
+  const pre=new Date(evtTime.getTime()-10*60*1000);
+  const delayPre=pre-now;
+  const keyPre=evt.id+'_pre';
+  if(delayPre>0&&!_firedNotifs.has(keyPre)){
+    _scheduledNotifs[keyPre]=setTimeout(()=>{
+      _firedNotifs.add(keyPre);
+      fireNotif('⏰','10 menit lagi!',`${evt.title} mulai pukul ${evt.start} — ${WP[evt.wp]?.n||evt.wp}`);
+    },delayPre);
+  }
+
+  // Tepat saat mulai
+  const delayStart=evtTime-now;
+  const keyStart=evt.id+'_start';
+  if(delayStart>0&&delayStart<24*60*60*1000&&!_firedNotifs.has(keyStart)){
+    _scheduledNotifs[keyStart]=setTimeout(()=>{
+      _firedNotifs.add(keyStart);
+      fireNotif('🏥','Jadwal dimulai sekarang!',`${evt.title} — ${WP[evt.wp]?.n||evt.wp}${evt.notes?'\n'+evt.notes:''}`);
+    },delayStart);
+  }
+}
+
+function cancelEvtNotifs(id){
+  ['_pre','_start'].forEach(s=>{
+    const k=id+s;
+    if(_scheduledNotifs[k]){clearTimeout(_scheduledNotifs[k]);delete _scheduledNotifs[k];}
+  });
+}
+
+// Re-jadwalkan semua event saat data berubah
+function rescheduleAll(){
+  // reset semua yang masih pending
+  Object.values(_scheduledNotifs).forEach(clearTimeout);
+  _scheduledNotifs={};
+  if(!canNotif())return;
+  const todayEvts=S.events.filter(e=>e.reminder&&e.date===TODAY);
+  // juga besok
+  const tom=new Date();tom.setDate(tom.getDate()+1);
+  const tomStr=dstr(tom);
+  const tomEvts=S.events.filter(e=>e.reminder&&e.date===tomStr);
+  [...todayEvts,...tomEvts].forEach(scheduleEvtNotifs);
+}
+
+// Notifikasi pengingat (reminder) yang deadline hari ini — tampil sekali saat app dibuka
+function checkRemindersToday(){
+  if(!S._remChecked){
+    S._remChecked=true;
+    const due=S.rems.filter(r=>!r.done&&r.date===TODAY);
+    if(due.length>0){
+      setTimeout(()=>{
+        due.forEach(r=>{
+          fireNotif('📋',`Pengingat: ${r.text}`,`Deadline hari ini · Prioritas ${r.priority}`);
+        });
+      },2000);
+    }
+  }
+}
+
 async function addEvt(f){setSyncing(true);try{await ECOL.add(f);}finally{setSyncing(false);}}
 async function updEvt(id,f){setSyncing(true);const{id:_,...data}=f;try{await ECOL.doc(id).update(data);}finally{setSyncing(false);}}
-async function delEvt(id){if(!confirm('Hapus jadwal ini?'))return;setSyncing(true);try{await ECOL.doc(id).delete();}finally{setSyncing(false);}}
+async function delEvt(id){if(!confirm('Hapus jadwal ini?'))return;cancelEvtNotifs(id);setSyncing(true);try{await ECOL.doc(id).delete();}finally{setSyncing(false);}}
 async function addRem(r){setSyncing(true);try{await RCOL.add({...r,done:false});}finally{setSyncing(false);}}
 async function togRem(id,done){setSyncing(true);try{await RCOL.doc(id).update({done:!done});}finally{setSyncing(false);}}
 async function delRem(id){setSyncing(true);try{await RCOL.doc(id).delete();}finally{setSyncing(false);}}
@@ -244,15 +412,15 @@ function boot(){
   ECOL.onSnapshot(snap=>{
     S.events=snap.docs.map(d=>({id:d.id,...d.data()}));
     eReady=true;
-    if(eReady&&rReady)show();
-    else if(S.ready)render();
+    if(eReady&&rReady){show();rescheduleAll();}
+    else if(S.ready){render();rescheduleAll();}
   },()=>{eReady=true;if(eReady&&rReady)show();});
 
   RCOL.onSnapshot(snap=>{
     S.rems=snap.docs.map(d=>({id:d.id,...d.data()}));
     rReady=true;
-    if(eReady&&rReady)show();
-    else if(S.ready)render();
+    if(eReady&&rReady){show();checkRemindersToday();}
+    else if(S.ready){render();checkRemindersToday();}
   },()=>{rReady=true;if(eReady&&rReady)show();});
 
   // Timeout fallback 6 detik
@@ -343,6 +511,8 @@ function vToday(){
       <div class="hdr-title">Selamat Datang 👋</div>
     </div>
     <div class="content">
+      ${('Notification' in window)&&Notification.permission==='default'?`<div class="notif-banner"><div style="font-size:26px">🔔</div><div class="notif-banner-body"><div class="notif-banner-title">Aktifkan Notifikasi</div><div class="notif-banner-sub">Dapat pengingat otomatis saat jadwal mau mulai</div></div><button class="notif-banner-btn" onclick="reqNotifPerm()">Aktifkan</button></div>`:''}
+      ${('Notification' in window)&&Notification.permission==='denied'?`<div style="background:#FEF3C7;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#92400E;"><b>⚠ Notifikasi diblokir.</b> Buka pengaturan browser untuk mengizinkan notifikasi dari situs ini.</div>`:''}
       <div class="stats">
         <div class="stat"><div class="stat-l">Jadwal Hari Ini</div><div class="stat-v">${te.length}</div><div class="stat-s">kegiatan</div></div>
         <div class="stat"><div class="stat-l">Tempat Kerja</div>
@@ -460,6 +630,7 @@ function selDate(d){S.selDate=d;render();}
 function shiftWk(dir){S.wkOff+=dir;render();}
 
 // ── GO ───────────────────────────────────────
+if('Notification' in window)_notifPerm=Notification.permission;
 boot();
 </script>
 </body>
